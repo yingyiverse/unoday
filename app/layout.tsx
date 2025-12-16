@@ -3,6 +3,7 @@ import { Inter, Noto_Serif_SC } from 'next/font/google'
 import './globals.css'
 import { LanguageProvider } from '@/lib/language-context'
 import DynamicTitle from '@/components/DynamicTitle'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const notoSerifSC = Noto_Serif_SC({
@@ -128,6 +129,7 @@ export default function RootLayout({
           {children}
         </LanguageProvider>
         <div id="focus-ssr-overlay" className="fixed inset-0 z-40 opacity-0 pointer-events-none"></div>
+        <Analytics />
       </body>
     </html>
   )
