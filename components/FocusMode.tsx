@@ -141,6 +141,7 @@ export default function FocusMode() {
   const [showDistractions, setShowDistractions] = useState(false);
   const [isExitingCountdown, setIsExitingCountdown] = useState(false);
   const [showFullscreenHint, setShowFullscreenHint] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -166,6 +167,26 @@ export default function FocusMode() {
     if (isMac) {
       document.body.classList.add('is-mac');
     }
+  }, []);
+
+  // Orientation detection
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isLandscapeOrientation = window.matchMedia('(orientation: landscape)').matches;
+      setIsLandscape(isLandscapeOrientation);
+    };
+
+    // Check initial orientation
+    checkOrientation();
+
+    // Listen for orientation changes
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
   }, []);
 
   // Restore state from localStorage after hydration
@@ -1293,7 +1314,8 @@ export default function FocusMode() {
                         onMouseLeave={handleLongPressEnd}
                         onTouchStart={(e) => handleLongPressStart(e, startActiveFocus)}
                         onTouchEnd={handleLongPressEnd}
-                        className="relative px-8 py-3 text-white"
+                        className="relative px-8 py-3 text-white select-none"
+                        style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
                       >
                         <span className="relative z-10 uppercase tracking-widest text-sm font-bold">{t('focus-start')}</span>
                         <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
@@ -1322,12 +1344,14 @@ export default function FocusMode() {
         {stage === 'active' && (
           <div className="relative flex flex-col items-center justify-center w-full h-full">
             {/* Tabs - Absolute positioned at top - Hidden during Bell animation */}
-            <div className={`absolute top-20 left-1/2 -translate-x-1/2 flex gap-8 transition-opacity duration-500 ${
+            <div className={`absolute left-1/2 -translate-x-1/2 flex gap-6 sm:gap-8 transition-opacity duration-500 ${
+              isLandscape ? 'top-8 sm:top-12' : 'top-16 sm:top-20'
+            } ${
               showBellAnimation ? 'opacity-0 pointer-events-none' : (showHeader ? 'opacity-100' : 'opacity-0')
             }`}>
               <button
                 onClick={() => setActiveTab('uno')}
-                className={`text-lg font-medium pb-1 transition-colors ${
+                className={`text-base sm:text-lg font-medium pb-1 transition-colors ${
                   activeTab === 'uno' ? 'text-white border-b-2 border-white' : 'text-white/50 hover:text-white'
                 }`}
               >
@@ -1335,7 +1359,7 @@ export default function FocusMode() {
               </button>
               <button
                 onClick={() => setActiveTab('timer')}
-                className={`text-lg font-medium pb-1 transition-colors ${
+                className={`text-base sm:text-lg font-medium pb-1 transition-colors ${
                   activeTab === 'timer' ? 'text-white border-b-2 border-white' : 'text-white/50 hover:text-white'
                 }`}
               >
@@ -1347,8 +1371,10 @@ export default function FocusMode() {
             <div className="flex flex-col items-center justify-center w-full px-4">
               {activeTab === 'uno' ? (
                 <div className="flex flex-col items-center">
-                  <div className={`${oswald.className} ${showTimerText ? 'text-white' : 'text-white/30'} transition-opacity transition-colors duration-500 text-center`}
-                    style={{ fontSize: '160px', letterSpacing: '0.05em' }}
+                  <div className={`${oswald.className} ${showTimerText ? 'text-white' : 'text-white/30'} transition-opacity transition-colors duration-500 text-center ${
+                    isLandscape ? 'text-[60px] sm:text-[80px] md:text-[120px]' : 'text-[80px] sm:text-[120px] md:text-[160px]'
+                  }`}
+                    style={{ letterSpacing: '0.05em' }}
                   >
                     {unoTask}
                   </div>
@@ -1369,13 +1395,13 @@ export default function FocusMode() {
                   ) : !countdownMode && !selectedTime ? (
                     // Time selection mode
                     <div className="flex flex-col items-center gap-8">
-                      <p className="text-white/50 text-lg font-light">{t('timer-countdown-hint')}</p>
-                      <div className="flex flex-wrap justify-center gap-6">
+                      <p className="text-white/50 text-base sm:text-lg font-light">{t('timer-countdown-hint')}</p>
+                      <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
                         {[3, 15, 30, 60].map((minutes) => (
                           <button
                             key={minutes}
                             onClick={() => selectTime(minutes)}
-                            className="px-12 py-6 rounded-full text-3xl text-white/50 hover:text-white hover:bg-white/10 transition-all border border-white/20 hover:border-white/50"
+                            className="px-8 py-4 sm:px-12 sm:py-6 rounded-full text-2xl sm:text-3xl text-white/50 hover:text-white hover:bg-white/10 transition-all border border-white/20 hover:border-white/50"
                           >
                             {minutes}m
                           </button>
@@ -1384,18 +1410,16 @@ export default function FocusMode() {
                     </div>
                   ) : !countdownMode && selectedTime ? (
                     // Sound selection and start button
-                    <div className="flex flex-col items-center gap-10">
-                      <div className="text-white/30 text-lg">{t('timer-selected')} {selectedTime} {t('timer-minutes')}</div>
-
+                    <div className="flex flex-col items-center gap-10 mt-16 sm:mt-0">
                       {/* Ambient Sound Selection */}
                       <div className="flex flex-col items-center gap-6">
-                        <p className="text-white/50 text-base font-light">{t('timer-sound-hint')}</p>
-                        <div className="grid grid-cols-4 gap-6">
+                        <p className="text-white/50 text-sm sm:text-base font-light">{t('timer-sound-hint')}</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
                           {AMBIENT_SOUNDS.map((sound) => (
                             <button
                               key={sound.id}
                               onClick={() => selectSound(sound.id)}
-                              className={`px-12 py-6 rounded-full transition-all border flex flex-col items-center justify-center gap-3 ${
+                              className={`px-6 py-4 sm:px-12 sm:py-6 rounded-full transition-all border flex flex-col items-center justify-center gap-2 sm:gap-3 ${
                                 selectedSound === sound.id
                                   ? 'bg-white/20 text-white border-white/50'
                                   : 'text-white/50 border-white/20 hover:text-white hover:border-white/50 hover:bg-white/10'
@@ -1404,23 +1428,23 @@ export default function FocusMode() {
                               <div className="opacity-80">
                                 {sound.icon}
                               </div>
-                              <span className="text-sm">{t(sound.labelKey)}</span>
+                              <span className="text-xs sm:text-sm">{t(sound.labelKey)}</span>
                             </button>
                           ))}
                         </div>
                       </div>
 
                       {/* Start and Back buttons */}
-                      <div className="flex gap-6">
+                      <div className="flex gap-4 sm:gap-6">
                         <button
                           onClick={() => setSelectedTime(null)}
-                          className="px-8 py-3 rounded-full border border-white/20 text-white/50 hover:text-white hover:border-white/50 transition-all text-sm uppercase tracking-widest"
+                          className="px-6 py-2 sm:px-8 sm:py-3 rounded-full border border-white/20 text-white/50 hover:text-white hover:border-white/50 transition-all text-xs sm:text-sm uppercase tracking-widest"
                         >
                           {t('timer-back')}
                         </button>
                         <button
                           onClick={startCountdownWithBell}
-                          className="px-10 py-3 rounded-full bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all text-sm uppercase tracking-widest font-bold"
+                          className="px-8 py-2 sm:px-10 sm:py-3 rounded-full bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all text-xs sm:text-sm uppercase tracking-widest font-bold"
                         >
                           {t('timer-start')}
                         </button>
@@ -1428,7 +1452,7 @@ export default function FocusMode() {
                     </div>
                   ) : (
                     // Countdown mode
-                    <div className="flex flex-col items-center gap-12">
+                    <div className={`flex flex-col items-center ${isLandscape ? 'gap-4 sm:gap-6' : 'gap-8 sm:gap-12'}`}>
                       {countdownRemaining === 0 ? (
                         // Bell Animation when countdown ends
                         <div className="flex flex-col items-center justify-center">
@@ -1442,9 +1466,11 @@ export default function FocusMode() {
                         </div>
                       ) : (
                         <div className={`${oswald.className} transition-opacity transition-colors duration-1000 ${
+                          isLandscape ? 'text-[70px] sm:text-[100px] md:text-[140px]' : 'text-[100px] sm:text-[140px] md:text-[196px]'
+                        } ${
                           countdownTextVisible ? 'opacity-100' : 'opacity-0'
                         } ${(isExitingCountdown || countdownRemaining <= 3 || showTimerText) ? 'text-white' : 'text-white/30'}`}
-                          style={{ fontSize: '196px', letterSpacing: '0.05em' }}
+                          style={{ letterSpacing: '0.05em' }}
                         >
                           {formatCountdown(countdownRemaining)}
                         </div>
@@ -1453,7 +1479,7 @@ export default function FocusMode() {
                       {/* Audio resume prompt */}
                       {showAudioResumePrompt && (
                         <button
-                          className="px-8 py-4 rounded-full bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all text-sm uppercase tracking-widest animate-pulse"
+                          className="px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all text-xs sm:text-sm uppercase tracking-widest animate-pulse"
                         >
                           {t('timer-resume-audio')}
                         </button>
@@ -1461,7 +1487,7 @@ export default function FocusMode() {
 
                       <button
                         onClick={exitCountdown}
-                        className={`px-8 py-3 rounded-full border border-white/20 hover:border-white/50 text-white/50 hover:text-white hover:bg-white/10 transition-all duration-500 text-sm uppercase tracking-widest ${showHeader ? 'opacity-100' : 'opacity-0'}`}
+                        className={`px-6 py-2 sm:px-8 sm:py-3 rounded-full border border-white/20 hover:border-white/50 text-white/50 hover:text-white hover:bg-white/10 transition-all duration-500 text-xs sm:text-sm uppercase tracking-widest ${showHeader ? 'opacity-100' : 'opacity-0'}`}
                       >
                         {t('timer-exit')}
                       </button>
@@ -1473,15 +1499,18 @@ export default function FocusMode() {
 
             {/* Bottom Actions - Only show in Uno tab */}
             {activeTab === 'uno' && (
-              <div className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-[20vh] flex items-end justify-center pb-12 transition-opacity duration-500 z-50 ${showHeader ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="flex gap-12">
+              <div className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full sm:w-2/3 md:w-1/3 flex items-end justify-center transition-opacity duration-500 z-50 ${
+                isLandscape ? 'h-[15vh] pb-4' : 'h-[20vh] pb-8 sm:pb-12'
+              } ${showHeader ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="flex gap-6 sm:gap-12">
                   <button
                     onMouseDown={(e) => handleLongPressStart(e, () => finishSession('giveup'))}
                     onMouseUp={handleLongPressEnd}
                     onMouseLeave={handleLongPressEnd}
                     onTouchStart={(e) => handleLongPressStart(e, () => finishSession('giveup'))}
                     onTouchEnd={handleLongPressEnd}
-                    className="relative px-6 py-2 text-white/50 hover:text-white transition-colors text-sm uppercase tracking-widest group"
+                    className="relative px-4 py-2 sm:px-6 sm:py-2 text-white/50 hover:text-white transition-colors text-xs sm:text-sm uppercase tracking-widest group select-none"
+                    style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
                   >
                     <span className="relative z-10">{t('focus-give-up')}</span>
                     <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
@@ -1494,7 +1523,8 @@ export default function FocusMode() {
                     onMouseLeave={handleLongPressEnd}
                     onTouchStart={(e) => handleLongPressStart(e, () => finishSession('complete'))}
                     onTouchEnd={handleLongPressEnd}
-                    className="relative px-6 py-2 text-white hover:text-white transition-colors text-sm uppercase tracking-widest font-bold group"
+                    className="relative px-4 py-2 sm:px-6 sm:py-2 text-white hover:text-white transition-colors text-xs sm:text-sm uppercase tracking-widest font-bold group select-none"
+                    style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
                   >
                     <span className="relative z-10">{t('focus-complete')}</span>
                     <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
