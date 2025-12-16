@@ -14,6 +14,7 @@
 
 ## Product Philosophy
 In an era where attention is "stolen," we urgently need to return to the present moment, to think about what truly matters, and to stay focused. That's Uno, a small product to help you return to focus. You can have just one Uno per day, or three to five—it's entirely up to your personal preference. The design philosophy is also rooted in Zen: "Only Now." and "Let go." When you focus on one thing, many other "thoughts" may arise. Accept them, let them go, and return to the present. It's that simple.
+Additionally, the product makes significant trade-offs—there are no AI elements, except for Vibe Coding itself.
 
 ## About Uno
 The word "Uno" originally derives from the Latin word "Unus," which later evolved through Spanish, Italian, and other languages, representing the number "1" (One), uniqueness, and sharing roots with "Unit" and "Unique." While building this product through Vibe Coding, I discovered there's a card game called "UNO"—when you're down to your last card, probability-wise, your winning chances are highest, but... not necessarily? Personally, I prefer pronouncing this word as (/juː/) rather than (/u/).
