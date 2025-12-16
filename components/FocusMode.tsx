@@ -21,7 +21,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'countryside' as const,
     labelKey: 'sound-countryside' as const,
-    file: '/audio/Countryside Night.mp3',
+    file: '/Countryside Night.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <circle cx="10" cy="10" r="6" fill="currentColor" opacity="0.3"/>
@@ -33,7 +33,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'beach' as const,
     labelKey: 'sound-beach' as const,
-    file: '/audio/Beach Waves at Night.mp3',
+    file: '/Beach Waves at Night.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M2 16c4-3 8-3 12 0s8 3 12 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -44,7 +44,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'ocean' as const,
     labelKey: 'sound-ocean' as const,
-    file: '/audio/Ocean.mp3',
+    file: '/Ocean.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -56,7 +56,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'snow' as const,
     labelKey: 'sound-snow' as const,
-    file: '/audio/Snow.mp3',
+    file: '/Snow.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M16 6v20M6 16h20M10 10l12 12M10 22l12-12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -70,7 +70,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'himalaya' as const,
     labelKey: 'sound-himalaya' as const,
-    file: '/audio/Snow Falling_Under_Rock_Himalaya.mp3',
+    file: '/Snow Falling_Under_Rock_Himalaya.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M2 26L16 6l14 20z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -81,7 +81,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'lightrain' as const,
     labelKey: 'sound-lightrain' as const,
-    file: '/audio/Light_Rain_Forest_Brazil_Increasing_Intensity.mp3',
+    file: '/Light_Rain_Forest_Brazil_Increasing_Intensity.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M8 12v8M16 10v10M24 12v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
@@ -91,7 +91,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'downpour' as const,
     labelKey: 'sound-downpour' as const,
-    file: '/audio/Downpour01.mp3',
+    file: '/Downpour01.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M6 10v12M12 8v14M18 10v12M24 8v14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
@@ -101,7 +101,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'lake' as const,
     labelKey: 'sound-lake' as const,
-    file: '/audio/Gentle Lake.mp3',
+    file: '/Gentle Lake.mp3',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <ellipse cx="16" cy="16" rx="12" ry="4" stroke="currentColor" strokeWidth="1.5" opacity="0.7"/>
@@ -885,7 +885,7 @@ export default function FocusMode() {
   };
 
   const playEntranceBell = (onEnded: () => void) => {
-    const audio = new Audio('/audio/Entrance Bell1.mp3');
+    const audio = new Audio('/Entrance Bell1.mp3');
     bellAudioRef.current = audio;
     audio.volume = 0.7;
     audio.onended = onEnded;
@@ -893,7 +893,7 @@ export default function FocusMode() {
   };
 
   const playExitBell = () => {
-    const audio = new Audio('/audio/Entrance Bell2.mp3');
+    const audio = new Audio('/Entrance Bell2.mp3');
     bellAudioRef.current = audio;
     audio.volume = 0.7;
     audio.onended = () => {
@@ -1008,7 +1008,7 @@ export default function FocusMode() {
   const playDownpourSequence = (index: number): Promise<void> => {
     if (index > 8) index = 1; // Loop back to 1
 
-    const audio = new Audio(`/audio/Downpour0${index}.mp3`);
+    const audio = new Audio(`/Downpour0${index}.mp3`);
     ambientAudioRef.current = audio;
     audio.volume = 0.5;
     audio.preload = 'auto';
@@ -1040,7 +1040,7 @@ export default function FocusMode() {
           const nextIndex = currentIndex >= 8 ? 1 : currentIndex + 1;
           console.log(`[Prepare] Preloading Downpour0${nextIndex}`);
 
-          const nextAudio = new Audio(`/audio/Downpour0${nextIndex}.mp3`);
+          const nextAudio = new Audio(`/Downpour0${nextIndex}.mp3`);
           nextAudio.volume = 0; // Start at 0 for fade-in
           nextAudio.preload = 'auto';
           nextAudio.load();
