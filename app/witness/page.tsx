@@ -6,9 +6,9 @@ import FocusMode from '@/components/FocusMode';
 import Footer from '@/components/Footer';
 import EnsoCircle from '@/components/EnsoCircle';
 import { useLanguage } from '@/lib/language-context';
-import { DAILY_UNO_LIMIT, USE_MOCK_DATA } from '@/lib/constants';
+import { DAILY_UNO_LIMIT } from '@/lib/constants';
 import { HistoryItem, Achievement, BadgeType } from '@/lib/types';
-import { generateMockData, calculateCurrentStreak, getUnlockedAchievements } from '@/lib/utils';
+import { calculateCurrentStreak, getUnlockedAchievements } from '@/lib/utils';
 
 export default function WitnessPage() {
   const { t } = useLanguage();
@@ -19,7 +19,7 @@ export default function WitnessPage() {
 
   useEffect(() => {
     // Load history data
-    const historyData = USE_MOCK_DATA ? generateMockData() : JSON.parse(localStorage.getItem('unoday_history') || '[]');
+    const historyData = JSON.parse(localStorage.getItem('unoday_history') || '[]');
     setHistory(historyData);
 
     // Calculate today's count

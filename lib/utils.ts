@@ -1,39 +1,6 @@
 import { HistoryItem, Achievement, BadgeType } from './types';
 
 /**
- * Generate mock data for the past 50 days
- */
-export function generateMockData(): HistoryItem[] {
-  const mockHistory: HistoryItem[] = [];
-  const today = new Date();
-
-  // Generate for past 50 days
-  for (let i = 0; i < 50; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    const dateStr = date.toDateString();
-
-    // Random number of tasks (0 to 8)
-    const taskCount = Math.floor(Math.random() * 9);
-
-    // Skip some days completely (20% chance)
-    if (Math.random() < 0.2) continue;
-
-    for (let j = 0; j < taskCount; j++) {
-      mockHistory.push({
-        id: date.getTime() + j,
-        task: `Mock Task ${j}`,
-        status: Math.random() > 0.2 ? 'complete' : 'giveup',
-        duration: 1500000,
-        endTime: date.getTime() + j + 1500000,
-        date: dateStr,
-      });
-    }
-  }
-  return mockHistory;
-}
-
-/**
  * Calculate current streak from history data
  */
 export function calculateCurrentStreak(history: HistoryItem[]): number {
