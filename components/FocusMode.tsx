@@ -189,6 +189,32 @@ export default function FocusMode() {
     };
   }, []);
 
+  // Handle page visibility changes to resume audio on mobile
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Page became visible, try to resume audio if it was playing
+        if (ambientAudioRef.current && ambientAudioRef.current.paused) {
+          console.log('[Visibility] Page visible, resuming audio');
+          ambientAudioRef.current.play().catch(err => {
+            console.error('[Visibility] Failed to resume audio:', err);
+            // Show resume prompt to user
+            setShowAudioResumePrompt(true);
+            setPendingAudioSound(selectedSound);
+          });
+        }
+      } else {
+        console.log('[Visibility] Page hidden');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [selectedSound]);
+
   // Restore state from localStorage after hydration
   useEffect(() => {
     // Mark as hydrated
@@ -949,7 +975,19 @@ export default function FocusMode() {
       ambientAudioRef.current = audio;
       audio.volume = 0.5;
       audio.preload = 'auto';
+      audio.loop = false; // We handle looping manually with crossfade
 
+      // Add attributes for mobile compatibility
+      audio.setAttribute('playsinline', 'true');
+      audio.setAttribute('webkit-playsinline', 'true');
+
+      // Debug: Log audio events
+      audio.addEventListener('pause', () => console.log('[Audio] Paused unexpectedly'));
+      audio.addEventListener('suspend', () => console.log('[Audio] Suspended'));
+      audio.addEventListener('stalled', () => console.log('[Audio] Stalled'));
+      audio.addEventListener('waiting', () => console.log('[Audio] Waiting for data'));
+      audio.addEventListener('canplaythrough', () => console.log('[Audio] Can play through'));
+      audio.addEventListener('error', (e) => console.error('[Audio] Error:', e));
 
       const setupAudioHandlers = (currentAudio: HTMLAudioElement) => {
         let lastLoggedProgress = -1;
@@ -975,6 +1013,8 @@ export default function FocusMode() {
             const nextAudio = new Audio(sound.file);
             nextAudio.volume = 0; // Start at 0 for fade-in
             nextAudio.preload = 'auto';
+            nextAudio.setAttribute('playsinline', 'true');
+            nextAudio.setAttribute('webkit-playsinline', 'true');
             nextAudio.load();
             nextAudioRef.current = nextAudio;
             nextAudioPrepared = true;
@@ -984,6 +1024,7 @@ export default function FocusMode() {
           if (timeRemaining <= crossfadeDuration && nextAudioRef.current && !crossfadeStarted) {
             nextAudioRef.current.play()
               .then(() => {
+                console.log('[Crossfade] Next audio started successfully');
                 // Setup handlers for the next audio
                 setupAudioHandlers(nextAudioRef.current!);
               })
@@ -1033,6 +1074,19 @@ export default function FocusMode() {
     ambientAudioRef.current = audio;
     audio.volume = 0.5;
     audio.preload = 'auto';
+    audio.loop = false; // We handle looping manually
+
+    // Add attributes for mobile compatibility
+    audio.setAttribute('playsinline', 'true');
+    audio.setAttribute('webkit-playsinline', 'true');
+
+    // Debug: Log audio events
+    audio.addEventListener('pause', () => console.log(`[Downpour0${index}] Paused unexpectedly`));
+    audio.addEventListener('suspend', () => console.log(`[Downpour0${index}] Suspended`));
+    audio.addEventListener('stalled', () => console.log(`[Downpour0${index}] Stalled`));
+    audio.addEventListener('waiting', () => console.log(`[Downpour0${index}] Waiting for data`));
+    audio.addEventListener('canplaythrough', () => console.log(`[Downpour0${index}] Can play through`));
+    audio.addEventListener('error', (e) => console.error(`[Downpour0${index}] Error:`, e));
 
     console.log(`[Play] Starting Downpour0${index}`);
 
@@ -1064,6 +1118,8 @@ export default function FocusMode() {
           const nextAudio = new Audio(`/Downpour0${nextIndex}.mp3`);
           nextAudio.volume = 0; // Start at 0 for fade-in
           nextAudio.preload = 'auto';
+          nextAudio.setAttribute('playsinline', 'true');
+          nextAudio.setAttribute('webkit-playsinline', 'true');
           nextAudio.load();
           nextAudioRef.current = nextAudio;
           nextAudioPrepared = true;
