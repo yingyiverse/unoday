@@ -16,7 +16,18 @@
   <img src="https://img.shields.io/badge/TailwindCSS-3-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS 3" />
 </p>
 
-一日一事，当下唯一。于纷扰中保持澄澈，其余皆可待。
+<div align="center">
+  <h2>UnoDay</h2>
+  <p>你当下唯一的事 Your Daily Uno.</p>
+  <p>一日一事，当下唯一。于纷扰中保持澄澈，其余皆可待。</p>
+</div>
+
+## 产品哲学
+在一个注意力被“偷走”的时代，我们急需回归当下，去思考那些真正重要的事情，保持专注，这就是Uno，一个帮助用户/帮助自己回归专注的小产品，每天可以只有一个Uno，也可以是三五个，这完全取决于个人偏好。
+产品的设计理念源自禅宗："Only Now."，"Let go." 当你专注在一件事上，也许有很多其它“念头”，接收它，放下它，继续回到当下的专注，这就是生活本身。
+
+## 关于Uno
+Uno这个词最早起源拉丁语词汇 “Unus”，后来经过西班牙语、意大利语等演变，代表数字“1”（One）、唯一，与Unit、Unique同源。直到这个产品idea在实际Vibe Coding中，我才知道有个游戏叫“UNO”，当你只剩最后一张牌，从概率上说，胜率最大，但，也不一定？就我个人而言，我更倾向于这个词读（/juː/），而不是（/u/）。
 
 ![UnoDay Cover](Unoday.png)
 ![Uno Task](Uno%20task.png)
