@@ -1,0 +1,350 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base typography */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html,
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Disable snap for witness page */
+.snap-none,
+.snap-none * {
+  scroll-snap-type: none !important;
+  scroll-snap-align: none !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Typing cursor animation for hero title */
+.typing-cursor::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+  color: currentColor;
+  font-weight: 400;
+}
+
+/* Blinking animation for typing cursor */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Floating animation for scroll indicator */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+/* Apply floating animation */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Flowing shadow animation for CTA button */
+@keyframes flowing-shadow {
+  0% {
+    box-shadow: -16px 16px 60px rgba(0, 0, 0, 0.5),
+                -8px 8px 30px rgba(0, 0, 0, 0.4),
+                -4px 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  25% {
+    box-shadow: 0px 20px 65px rgba(0, 0, 0, 0.55),
+                0px 10px 32px rgba(0, 0, 0, 0.45),
+                0px 4px 14px rgba(0, 0, 0, 0.35);
+  }
+
+  50% {
+    box-shadow: 16px 16px 60px rgba(0, 0, 0, 0.5),
+                8px 8px 30px rgba(0, 0, 0, 0.4),
+                4px 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  75% {
+    box-shadow: 0px 12px 48px rgba(0, 0, 0, 0.48),
+                0px 6px 24px rgba(0, 0, 0, 0.38),
+                0px 3px 10px rgba(0, 0, 0, 0.28);
+  }
+
+  100% {
+    box-shadow: -16px 16px 60px rgba(0, 0, 0, 0.5),
+                -8px 8px 30px rgba(0, 0, 0, 0.4),
+                -4px 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes flowing-shadow-dark {
+  0% {
+    box-shadow: -16px 16px 60px rgba(255, 255, 255, 0.42),
+                -8px 8px 30px rgba(255, 255, 255, 0.32),
+                -4px 4px 12px rgba(255, 255, 255, 0.22);
+  }
+
+  25% {
+    box-shadow: 0px 20px 65px rgba(255, 255, 255, 0.48),
+                0px 10px 32px rgba(255, 255, 255, 0.38),
+                0px 4px 14px rgba(255, 255, 255, 0.28);
+  }
+
+  50% {
+    box-shadow: 16px 16px 60px rgba(255, 255, 255, 0.42),
+                8px 8px 30px rgba(255, 255, 255, 0.32),
+                4px 4px 12px rgba(255, 255, 255, 0.22);
+  }
+
+  75% {
+    box-shadow: 0px 12px 48px rgba(255, 255, 255, 0.4),
+                0px 6px 24px rgba(255, 255, 255, 0.3),
+                0px 3px 10px rgba(255, 255, 255, 0.2);
+  }
+
+  100% {
+    box-shadow: -16px 16px 60px rgba(255, 255, 255, 0.42),
+                -8px 8px 30px rgba(255, 255, 255, 0.32),
+                -4px 4px 12px rgba(255, 255, 255, 0.22);
+  }
+}
+
+.animate-flowing-shadow {
+  animation: flowing-shadow 8s ease-in-out infinite;
+}
+
+.dark .animate-flowing-shadow {
+  animation: flowing-shadow-dark 8s ease-in-out infinite;
+}
+
+/* ===== Section 2: Breathing Dot Animation ===== */
+
+/* Breathing animation for the present moment dot */
+.breathing-dot {
+  animation: breathe 3.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.5);
+    opacity: 1;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 0.9;
+  }
+}
+
+/* Enhanced shadow for the black breathing dot */
+.breathing-dot > div {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: shadowBreathe 3.5s ease-in-out infinite;
+}
+
+@keyframes shadowBreathe {
+  0%,
+  100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ===== Focus Mode Transitions ===== */
+
+/* Initial state: match button shape and position */
+.focus-enter-start {
+  clip-path: inset(var(--btn-top) var(--btn-right) var(--btn-bottom) var(--btn-left) round 9999px);
+}
+
+/* Active state: expand to fill screen (0 inset) */
+.focus-enter-active {
+  clip-path: inset(0% 0% 0% 0% round 0px);
+  transition: clip-path 2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Persisted state: full screen */
+.focus-persisted {
+  clip-path: inset(0% 0% 0% 0% round 0px);
+}
+
+/* Distraction Drawer */
+.drawer-open {
+  transform: translateX(0) !important;
+}
+
+/* Shred Effect Animation */
+@keyframes shred {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.9) skew(10deg);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(0) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+.shredding {
+  animation: shred 0.5s ease-in forwards;
+}
+
+/* Long Press Progress */
+.long-press-active {
+  transition: width 5s linear !important;
+  width: 100% !important;
+}
+
+/* Custom Scrollbar for Witness Grid */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* Dark mode adjustment */
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Platform-specific shortcut hints */
+body.is-mac .non-mac-only {
+  display: none;
+}
+
+body:not(.is-mac) .mac-only {
+  display: none;
+}
+
+/* Preload Focus Mode: Hide main content and show overlay immediately */
+html.focus-mode-active header,
+html.focus-mode-active main {
+  display: none;
+}
+
+html.focus-mode-active #focus-overlay {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+html.focus-mode-active #focus-bg {
+  clip-path: inset(0% 0% 0% 0% round 0px);
+}
+
+html.focus-mode-active #focus-content {
+  opacity: 1 !important;
+}
+
+html.focus-mode-active,
+body.focus-mode-active {
+  background-color: #000 !important;
+}
+
+html.focus-mode-active #focus-ssr-overlay {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  background-color: #000 !important;
+}
+
+html.focus-hydrated #focus-ssr-overlay {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Fade in animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hide Next.js development menu (only in development mode) */
+#__next-build-watcher {
+  display: none !important;
+}
+
+nextjs-portal {
+  display: none !important;
+}
+
+[data-nextjs-dialog-overlay],
+[data-nextjs-dialog] {
+  display: none !important;
+}
