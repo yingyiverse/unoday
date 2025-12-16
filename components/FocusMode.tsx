@@ -33,7 +33,7 @@ const AMBIENT_SOUNDS = [
   {
     id: 'beach' as const,
     labelKey: 'sound-beach' as const,
-    file: '/audio/Beach Waves.wav',
+    file: '/audio/Beach Waves at Night.wav',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M2 16c4-3 8-3 12 0s8 3 12 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
