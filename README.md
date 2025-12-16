@@ -1,4 +1,3 @@
-# UnoDay
 
 <p align="center">
   <a href="./README.md"><img src="https://img.shields.io/badge/lang-中文-red?style=flat-square" alt="中文" /></a>
@@ -7,7 +6,7 @@
 
 
 <div align="center">
-  <h2>UnoDay</h2>
+  <h1>UnoDay</h1>
   <p>你当下唯一的事 Your Daily Uno.</p>
   <p>一日一事，当下唯一。于纷扰中保持澄澈，其余皆可待。</p>
 </div>
@@ -20,13 +19,17 @@
 Uno这个词最早起源拉丁语词汇 “Unus”，后来经过西班牙语、意大利语等演变，代表数字“1”（One）、唯一，与Unit、Unique同源。在这个小产品在实际Vibe Coding中，我才知道有个游戏叫“UNO”，当你只剩最后一张牌，从概率上说，胜率最大，但，也不一定？就我个人而言，我更倾向于这个词读（/juː/），而不是（/u/）。
 
 ![UnoDay Cover](Unoday.png)
+
 <p align="center">
   <p>Uno Task</p>
 </p>
+
 ![Uno Task](Uno%20task.png)
+
 <p align="center">
   <p>Uno Focus</p>
 </p>
+
 ![Timer 1](Timer1.png)
 ![Timer 2](Timer2.png)
 

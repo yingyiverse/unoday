@@ -1,4 +1,3 @@
-# UnoDay
 
 <p align="center">
   <a href="./README.md"><img src="https://img.shields.io/badge/lang-中文-red?style=flat-square" alt="中文" /></a>
@@ -7,7 +6,7 @@
 
 
 <div align="center">
-  <h2>UnoDay</h2>
+  <h1>UnoDay</h1>
   <p>Your Daily Uno.</p>
   <p>One day, one task. Stay present in the chaos. The rest can wait.</p>
 </div>
