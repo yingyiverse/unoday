@@ -19,18 +19,17 @@ In an era where attention is "stolen," we urgently need to return to the present
 The word "Uno" originally derives from the Latin word "Unus," which later evolved through Spanish, Italian, and other languages, representing the number "1" (One), uniqueness, and sharing roots with "Unit" and "Unique." While building this product through Vibe Coding, I discovered there's a card game called "UNO"—when you're down to your last card, probability-wise, your winning chances are highest, but... not necessarily? Personally, I prefer pronouncing this word as (/juː/) rather than (/u/).
 
 ![UnoDay Cover](Unoday.png)
-<p align="center">
-  <p>Uno Task</p>
-</p>
+
+<p align="center">Uno Task</p>
+
 ![Uno Task](Uno%20task.png)
-<p align="center">
-  <p>Uno Focus</p>
-</p>
+
+<p align="center">Uno Focus Moment</p>
+
 ![Timer 1](Timer1.png)
 ![Timer 2](Timer2.png)
 
 ## Features
-- Next.js 15 + React 19 + TypeScript + Tailwind
 - Limited daily Unos, with Input/Thinking mode, Uno mode, and Timer mode
 - Timer (3/15/30/60 minutes), choose your favorite ambient sound for deep focus
 - Distraction Drawer with `Ctrl/Cmd + D` shortcut, a lightweight place to capture various distractions
