@@ -87,6 +87,12 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  themeColor: '#000000',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black',
+    title: 'UnoDay',
+  },
 }
 
 export default function RootLayout({
@@ -114,6 +120,17 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@400&display=swap"
           rel="stylesheet"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                  navigator.serviceWorker.register('/sw.js').catch(function(){});
+                });
+              }
+            `,
+          }}
         />
       </head>
       <body
