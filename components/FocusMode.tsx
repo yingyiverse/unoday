@@ -790,11 +790,29 @@ export default function FocusMode() {
       if (sound) {
         const audio = new Audio(sound.file);
         audio.volume = 0.7;
+        audio.preload = 'auto';
+
+        // Add attributes for mobile compatibility
+        audio.setAttribute('playsinline', 'true');
+        audio.setAttribute('webkit-playsinline', 'true');
+
         previewAudioRef.current = audio;
 
-        audio.play().catch(err => {
-          console.error('Preview audio failed:', err);
-        });
+        // Use a small delay to ensure this is treated as user interaction
+        setTimeout(() => {
+          if (previewAudioRef.current) {
+            previewAudioRef.current.play().catch(err => {
+              console.error('Preview audio failed:', err);
+              console.error('Preview error details:', {
+                name: err?.name,
+                message: err?.message,
+                sound: sound.id,
+                readyState: audio.readyState
+              });
+              // Silently fail - preview is optional
+            });
+          }
+        }, 50);
 
         const PREVIEW_DURATION_MS = 5000;
         const FADE_OUT_MS = 1000;
