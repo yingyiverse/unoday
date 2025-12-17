@@ -142,6 +142,8 @@ export default function FocusMode() {
   const [isExitingCountdown, setIsExitingCountdown] = useState(false);
   const [showFullscreenHint, setShowFullscreenHint] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -214,6 +216,49 @@ export default function FocusMode() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [selectedSound]);
+
+  // Capture console logs for on-screen debugging
+  useEffect(() => {
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    const addLog = (level: string, ...args: unknown[]) => {
+      const timestamp = new Date().toLocaleTimeString();
+      const message = `[${timestamp}] ${level}: ${args.map(arg =>
+        typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+      ).join(' ')}`;
+
+      setDebugLogs(prev => [...prev.slice(-99), message]); // Keep last 100 logs
+    };
+
+    console.log = (...args: unknown[]) => {
+      originalLog(...args);
+      // Only capture audio-related logs
+      const message = args.join(' ');
+      if (message.includes('[Audio]') || message.includes('[Crossfade]') ||
+          message.includes('[Prepare]') || message.includes('[Visibility]') ||
+          message.includes('[Next') || message.includes('Downpour')) {
+        addLog('LOG', ...args);
+      }
+    };
+
+    console.error = (...args: unknown[]) => {
+      originalError(...args);
+      addLog('ERROR', ...args);
+    };
+
+    console.warn = (...args: unknown[]) => {
+      originalWarn(...args);
+      addLog('WARN', ...args);
+    };
+
+    return () => {
+      console.log = originalLog;
+      console.error = originalError;
+      console.warn = originalWarn;
+    };
+  }, []);
 
   // Restore state from localStorage after hydration
   useEffect(() => {
@@ -1015,21 +1060,55 @@ export default function FocusMode() {
             nextAudio.preload = 'auto';
             nextAudio.setAttribute('playsinline', 'true');
             nextAudio.setAttribute('webkit-playsinline', 'true');
+
+            // Add event listeners to nextAudio for debugging
+            nextAudio.addEventListener('pause', () => console.log('[NextAudio] Paused unexpectedly'));
+            nextAudio.addEventListener('suspend', () => console.log('[NextAudio] Suspended'));
+            nextAudio.addEventListener('stalled', () => console.log('[NextAudio] Stalled'));
+            nextAudio.addEventListener('waiting', () => console.log('[NextAudio] Waiting for data'));
+            nextAudio.addEventListener('canplaythrough', () => console.log('[NextAudio] Can play through'));
+            nextAudio.addEventListener('loadeddata', () => console.log('[NextAudio] Data loaded'));
+            nextAudio.addEventListener('error', (e) => console.error('[NextAudio] Error:', e));
+
             nextAudio.load();
             nextAudioRef.current = nextAudio;
             nextAudioPrepared = true;
+            console.log('[Prepare] Next audio prepared, readyState:', nextAudio.readyState);
           }
 
           // Start crossfade 2 seconds before end
           if (timeRemaining <= crossfadeDuration && nextAudioRef.current && !crossfadeStarted) {
-            nextAudioRef.current.play()
-              .then(() => {
-                console.log('[Crossfade] Next audio started successfully');
-                // Setup handlers for the next audio
-                setupAudioHandlers(nextAudioRef.current!);
-              })
-              .catch(err => console.error('[Crossfade Error]', err));
+            console.log('[Crossfade] Attempting to start next audio, readyState:', nextAudioRef.current.readyState);
 
+            // Check if audio is ready to play
+            // readyState: 0=HAVE_NOTHING, 1=HAVE_METADATA, 2=HAVE_CURRENT_DATA, 3=HAVE_FUTURE_DATA, 4=HAVE_ENOUGH_DATA
+            if (nextAudioRef.current.readyState < 2) {
+              console.warn('[Crossfade] Next audio not ready yet, readyState:', nextAudioRef.current.readyState);
+            }
+
+            // Attempt to play with retry mechanism
+            const playWithRetry = async (audio: HTMLAudioElement, retries = 3) => {
+              for (let i = 0; i < retries; i++) {
+                try {
+                  await audio.play();
+                  console.log(`[Crossfade Success] Next audio started (attempt ${i + 1})`);
+                  // Setup handlers for the next audio
+                  setupAudioHandlers(nextAudioRef.current!);
+                  return true;
+                } catch (err) {
+                  console.warn(`[Crossfade] Play attempt ${i + 1} failed:`, err);
+                  if (i < retries - 1) {
+                    // Wait a bit before retrying
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                  }
+                }
+              }
+              console.error('[Crossfade Error] All retry attempts failed');
+              console.error('[Crossfade Error Details] readyState:', nextAudioRef.current?.readyState, 'paused:', nextAudioRef.current?.paused);
+              return false;
+            };
+
+            playWithRetry(nextAudioRef.current);
             crossfadeStarted = true;
           }
 
@@ -1120,24 +1199,56 @@ export default function FocusMode() {
           nextAudio.preload = 'auto';
           nextAudio.setAttribute('playsinline', 'true');
           nextAudio.setAttribute('webkit-playsinline', 'true');
+
+          // Add event listeners to nextAudio for debugging
+          nextAudio.addEventListener('pause', () => console.log(`[NextDownpour0${nextIndex}] Paused unexpectedly`));
+          nextAudio.addEventListener('suspend', () => console.log(`[NextDownpour0${nextIndex}] Suspended`));
+          nextAudio.addEventListener('stalled', () => console.log(`[NextDownpour0${nextIndex}] Stalled`));
+          nextAudio.addEventListener('waiting', () => console.log(`[NextDownpour0${nextIndex}] Waiting for data`));
+          nextAudio.addEventListener('canplaythrough', () => console.log(`[NextDownpour0${nextIndex}] Can play through`));
+          nextAudio.addEventListener('loadeddata', () => console.log(`[NextDownpour0${nextIndex}] Data loaded`));
+          nextAudio.addEventListener('error', (e) => console.error(`[NextDownpour0${nextIndex}] Error:`, e));
+
           nextAudio.load();
           nextAudioRef.current = nextAudio;
           nextAudioPrepared = true;
 
           currentDownpourIndexRef.current = nextIndex;
+          console.log(`[Prepare] Downpour0${nextIndex} prepared, readyState:`, nextAudio.readyState);
         }
 
         // Start crossfade 2 seconds before end
         if (timeRemaining <= crossfadeDuration && nextAudioRef.current && !crossfadeStarted) {
-          console.log(`[Crossfade] Downpour0${currentIndex} -> Downpour0${currentDownpourIndexRef.current}`);
+          console.log(`[Crossfade] Downpour0${currentIndex} -> Downpour0${currentDownpourIndexRef.current}, readyState:`, nextAudioRef.current.readyState);
 
-          nextAudioRef.current.play()
-            .then(() => {
-              // Setup handlers for the next audio
-              setupAudioHandlers(nextAudioRef.current!, currentDownpourIndexRef.current);
-            })
-            .catch(err => console.error('[Crossfade Error]', err));
+          // Check if audio is ready to play
+          if (nextAudioRef.current.readyState < 2) {
+            console.warn(`[Crossfade] Downpour0${currentDownpourIndexRef.current} not ready yet, readyState:`, nextAudioRef.current.readyState);
+          }
 
+          // Attempt to play with retry mechanism
+          const playWithRetry = async (audio: HTMLAudioElement, retries = 3) => {
+            for (let i = 0; i < retries; i++) {
+              try {
+                await audio.play();
+                console.log(`[Crossfade Success] Downpour0${currentDownpourIndexRef.current} started (attempt ${i + 1})`);
+                // Setup handlers for the next audio
+                setupAudioHandlers(nextAudioRef.current!, currentDownpourIndexRef.current);
+                return true;
+              } catch (err) {
+                console.warn(`[Crossfade] Play attempt ${i + 1} failed:`, err);
+                if (i < retries - 1) {
+                  // Wait a bit before retrying
+                  await new Promise(resolve => setTimeout(resolve, 100));
+                }
+              }
+            }
+            console.error('[Crossfade Error] All retry attempts failed');
+            console.error(`[Crossfade Error Details] Downpour0${currentDownpourIndexRef.current} readyState:`, nextAudioRef.current?.readyState, 'paused:', nextAudioRef.current?.paused);
+            return false;
+          };
+
+          playWithRetry(nextAudioRef.current);
           crossfadeStarted = true;
         }
 
@@ -1652,6 +1763,62 @@ export default function FocusMode() {
         onReorder={reorderDistractions}
         isPlatformMac={isPlatformMac}
       />
+
+      {/* Debug Log Panel */}
+      {isVisible && (
+        <div className="fixed bottom-0 left-0 right-0 z-[100] pointer-events-auto">
+          {/* Toggle Button */}
+          <button
+            onClick={() => setShowDebugPanel(!showDebugPanel)}
+            className="absolute bottom-0 right-4 bg-white/10 backdrop-blur-sm text-white/70 px-3 py-1 text-xs rounded-t-lg border border-b-0 border-white/20 hover:bg-white/20 transition-colors"
+          >
+            {showDebugPanel ? '隐藏日志' : '显示日志'} ({debugLogs.length})
+          </button>
+
+          {/* Log Panel */}
+          {showDebugPanel && (
+            <div className="bg-black/90 backdrop-blur-sm border-t border-white/20 max-h-[40vh] overflow-y-auto">
+              <div className="p-4 space-y-1">
+                {debugLogs.length === 0 ? (
+                  <p className="text-white/50 text-xs">等待日志...</p>
+                ) : (
+                  <>
+                    {/* Clear button */}
+                    <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/10">
+                      <span className="text-white/70 text-xs">音频调试日志</span>
+                      <button
+                        onClick={() => setDebugLogs([])}
+                        className="text-white/50 hover:text-white text-xs underline"
+                      >
+                        清空
+                      </button>
+                    </div>
+
+                    {/* Logs - user-select enabled for copying */}
+                    <div className="font-mono text-xs space-y-1">
+                      {debugLogs.map((log, index) => {
+                        const isError = log.includes('ERROR');
+                        const isWarn = log.includes('WARN');
+                        const color = isError ? 'text-red-400' : isWarn ? 'text-yellow-400' : 'text-green-400';
+
+                        return (
+                          <div
+                            key={index}
+                            className={`${color} break-all`}
+                            style={{ userSelect: 'text', WebkitUserSelect: 'text' }}
+                          >
+                            {log}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
